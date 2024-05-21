@@ -1,0 +1,7 @@
+selectolax
+playwright
+ttkbootstrap
+pandas
+matplotlib
+pyautogui
+openpyxl
