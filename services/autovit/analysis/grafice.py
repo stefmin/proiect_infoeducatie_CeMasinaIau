@@ -16,14 +16,21 @@ def start_grafice(marca_selectata):
     fig1.set_size_inches(w/2, h/2)
     fig2.set_size_inches(w/2, h/2)
 
-    df['pret'] = df['pret'].apply(lambda x: int(x.replace(" ", "")))
+    df.dropna(subset=['pret'], inplace=True)
+    df.dropna(subset=['kilometraj'], inplace=True)
+    df.dropna(subset=['tip_vanzator'], inplace=True)
+    df.dropna(subset=['combustibil'], inplace=True)
+    df.dropna(subset=['cutie_viteze'], inplace=True)
+    df.dropna(subset=['model'], inplace=True)
+
+    df['pret'] = df['pret'].apply(lambda x: int(x.replace(" ", "").split(',',1)[0]))
     df['kilometraj'] = df['kilometraj'].apply(lambda x: int(x.replace(" ","").replace("km","")))
     df['tip_vanzator'] = df['tip_vanzator'].apply(lambda x: str(x.split(' ',1)[0]))
     df['combustibil'] = df['combustibil'].apply(lambda x: str(x.split(' ',1)[0]))
     df['cutie_viteze'] = df['cutie_viteze'].apply(lambda x: str(x.split(' ',1)[0]))
 
     df = df.astype({"pret": 'int32', "kilometraj": 'int32', "tip_vanzator":'string', "combustibil":'string', "cutie_viteze":'string'})
-
+    df=df.loc[df['kilometraj'] < 500000] 
     pret_model(df, g1)
     kilometraj_pret(df, g2)
     fig1.set_facecolor("#68A4A5")
@@ -43,7 +50,7 @@ def pret_model(df, g):
     # df1=df.groupby(['model'])['pret'].mean().round(0)
     df1=df.groupby(['model'])['pret'].mean().astype(int)
 
-    df1.plot(kind='bar', x='model', y='pret', color="#4C8055", ax=g, rot=30) 
+    df1.plot(kind='bar', x='model', y='pret', color="#4C8055", ax=g, rot=90) 
 
     g.set_facecolor("#D9DAD9")
     g.set_xlabel("Modelul masinii")
@@ -54,7 +61,7 @@ def kilometraj_pret(df, g):
     dfg=df.groupby(['kilometraj'])['pret'].mean().astype(int)
     df1=dfg.reset_index()
 
-    df1.plot(kind='line', x='kilometraj', y='pret', color="#4C8055", ax=g, rot=30)
+    df1.plot(kind='line', x='kilometraj', y='pret', color="#4C8055", ax=g, rot=90)
     g.set_facecolor("#D9DAD9")
     g.set_xlabel("Kilometraj")
     g.set_ylabel("Pretul masinii")
